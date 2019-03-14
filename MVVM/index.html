@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>手写MVVM</title>
+</head>
+<body>
+    <div id="app">
+        <div id="header">
+            <span>
+                good
+            </span>
+        </div>
+        <input type="text" v-model="msg">
+        {{msg}} {{a}}
+    </div>
+
+    <script src="./mvvm/watcher.js"></script>
+    <script src="./mvvm/observer.js"></script>
+    <script src="./mvvm/compiler.js"></script>
+    <script src="./mvvm/mvvm.js"></script>
+    <script>
+        let vm = new Mvvm({
+            el: '#app',
+            data: {
+                msg: '123',
+                a: 'aaa'
+            }
+        });
+    </script>
+</body>
+</html>
