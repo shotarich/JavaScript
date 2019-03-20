@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./VDOM.js"></script>
+    <script>
+        let vertualDOM = createElement('ul', {
+            class: 'nav',
+            style: {
+                "background": "red"
+            },
+        }, [
+            createElement('li', { class: 'item' }, ['a', 'a']),
+            createElement('li', { class: 'item' }, ['b', 'b']),
+            createElement('li', { class: 'item' }, ['c', 'c'])
+        ]);
+
+        let el = render(vertualDOM);
+        window.onload = () => renderDom(el, document.body);
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
