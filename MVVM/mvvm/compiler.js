@@ -8,7 +8,9 @@ class Compiler{
             // 获取带节点后先将节点放入fragment中去，在内存中操作dom会比直接操作dom快的多，最后再放回页面
             // 1.放入内存
             let fragment = this.node2fragment(this.el);
+            // 2.开始编译
             this.compile(fragment);
+            // 3.将编译好的内容塞回页面
             this.el.appendChild(fragment);
             fragment = null;
         }
@@ -35,8 +37,13 @@ class Compiler{
                 let expr = attrs[i].value;
                 let directiveType = attrName.slice(2); // [, directive] = expr.split('-');
 
-                CompilerUtil[directiveType](elementNode, this.vm, expr);
+                CompilerUtil[directiveType] && CompilerUtil[directiveType](elementNode, this.vm, expr);
             }
+        }
+        
+        for(let i = 0, len = attrs.length; i < len; i++) {
+            let attrName = attrs[i].name;
+            attrName.startsWith('v-') && elementNode.removeAttribute(attrName);
         }
     }
 
@@ -75,7 +82,7 @@ class Compiler{
 
     // 是否为指令
     isDirective(attrName) {
-        return attrName.includes('v-');
+        return attrName.startsWith('v-');
     }
 }
 
@@ -120,14 +127,14 @@ CompilerUtil = {
     model(node, vm, expr) {
         let updateFn = this.updater.modelUpdater;
 
-        // 这里要有一个监听，数据变化了就应该调用watch里面的cb
+        // 这里要给每一个v-model的值添加一个观察者，数据变化了就应该调用watch里面的cb
         new Watcher(vm, expr, (newVal) => {
             updateFn && updateFn(node, newVal);
         });
 
         node.addEventListener('input', (e) => {
             let newVal = e.target.value;
-            this.setVal(vm, expr, newVal);
+            this.setVal(vm, expr, newVal); // 给data重新设置值
         }, false);
 
         updateFn && updateFn(node, this.getVal(vm, expr));
@@ -136,7 +143,7 @@ CompilerUtil = {
     setVal(vm, expr, val) {
         expr = expr.split('.');
 
-        return expr.reduce((prev, cur, index) => {
+        expr.reduce((prev, cur, index) => {
             if(index === expr.length - 1) {
                 prev[cur] = val;
             }
@@ -153,13 +160,6 @@ CompilerUtil = {
 
         // 输入框更新
         modelUpdater(node, value) {
-            // 删除为指令属性
-            let attrs = node.attributes;
-            for(let i = 0, len = attrs.length; i < len; i++) {
-                let attrName = attrs[i].name;
-                attrName.includes('v-') && node.removeAttribute(attrName);
-            }
-
             node.value = value;
         }
     }

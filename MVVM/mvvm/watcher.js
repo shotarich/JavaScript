@@ -9,8 +9,10 @@ class Watcher{
 
     // 获取原来的值
     getOldVal() {
+        // 编译的时候回获取值，但此时Dep上是没有target属性的，只有添加观察者的时候才会添加target
         Dep.target = this;
-        let value = this.getVal(this.vm, this.expr);
+        let value = this.getVal(this.vm, this.expr); // 取值的时候会调用响应式的get方法
+        // 销毁target的目的是只在添加观察者的时候添加订阅，在编译的时候获取值不会添加订阅
         Dep.target = null;
 
         return value;

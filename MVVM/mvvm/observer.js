@@ -4,9 +4,7 @@ class Observer{
     }
 
     observe(data) {
-        if(!data || typeof data !== 'object') {
-            return;
-        }
+        if(!data || typeof data !== 'object') return;
 
         Object.keys(data).forEach(key => {
             this.defineReactive(data, key, data[key]);
@@ -23,6 +21,7 @@ class Observer{
             configurable: true,
 
             get() {
+                // 只在添加观察者的时候会有target属性，而在编译的时候没有target属性
                 Dep.target && dep.addSub(Dep.target);
                 return val;
             },
